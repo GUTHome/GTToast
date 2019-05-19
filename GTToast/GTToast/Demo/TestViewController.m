@@ -110,18 +110,28 @@
         {
             [GTToast loading];
             [button setTitle:@"loading" forState:UIControlStateNormal];
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                [GTToast hidden];
+            });
         }
             break;
         case 11:
         {
-            CGFloat j = 0;
-            for (int i = 0; i < 100; i ++) {
-                [GTToast showProgress:j Text:text];
-                sleep(0.5);
-                j += 0.01;
-                NSLog(@"--->%f", j);
-            }
             [button setTitle:@"progress" forState:UIControlStateNormal];
+            float progress = 0.0f;
+            while (progress < 1.0f) {
+
+                progress += 0.01;
+                [GTToast showProgress:progress Text:text];
+                usleep(50000);
+            }
+            
+            // 圆形进度条
+//            MBProgressHUD *HUD = [[MBProgressHUD alloc] initWithView:self.view];
+//            [self.view addSubview:HUD];
+//            HUD.mode = MBProgressHUDModeDeterminate;
+//            HUD.labelText = @"等待中";
+//            [HUD showWhileExecuting:@selector(ProgressBar) onTarget:self withObject:nil animated:YES];
         }
             break;
         case 12:
@@ -133,6 +143,18 @@
             
         default:
             break;
+    }
+}
+
+//
+- (void)ProgressBar{
+    float progress = 0.0f;
+        while (progress < 1.0f) {
+        progress += 0.01f;
+            dispatch_async(dispatch_get_main_queue(), ^{
+               [MBProgressHUD HUDForView:self.view].progress = progress;
+            });
+        usleep(50000);
     }
 }
 

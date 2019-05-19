@@ -77,13 +77,11 @@ dismissCompletion:(GTToastDismissCompletion) completionBlock
     hud.userInteractionEnabled = ![GTToastManager shareInstance].userCanTouchView;
     [hud showAnimated:YES];
     [hud hideAnimated:YES afterDelay:delay];
-    if (completionBlock) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (completionBlock) {
-                completionBlock();
-            }
-        });
-    }
+    hud.completionBlock = ^{
+        if (completionBlock) {
+            completionBlock();
+        }
+    };
 }
 
 /** info */
@@ -212,13 +210,11 @@ dismissCompletion:(GTToastDismissCompletion) completionBlock
     hud.removeFromSuperViewOnHide = YES;
     [hud showAnimated:YES];
     [hud hideAnimated:YES afterDelay:delay];
-    if (completionBlock) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (completionBlock) {
-                completionBlock();
-            }
-        });
-    }
+    hud.completionBlock = ^{
+        if (completionBlock) {
+            completionBlock();
+        }
+    };
 }
 
 /** image 37x37 */
@@ -257,13 +253,11 @@ dismissCompletion:(GTToastDismissCompletion) completionBlock
     hud.removeFromSuperViewOnHide = YES;
     [hud showAnimated:YES];
     [hud hideAnimated:YES afterDelay:delay];
-    if (completionBlock) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (completionBlock) {
-                completionBlock();
-            }
-        });
-    }
+    hud.completionBlock = ^{
+        if (completionBlock) {
+            completionBlock();
+        }
+    };
 }
 
 /** loading */
@@ -322,13 +316,11 @@ dismissCompletion:(GTToastDismissCompletion) completionBlock
     hud.mode = MBProgressHUDModeCustomView;
     [hud showAnimated:YES];
     [hud hideAnimated:YES afterDelay:delay];
-    if (completionBlock) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (completionBlock) {
-                completionBlock();
-            }
-        });
-    }
+    hud.completionBlock = ^{
+        if (completionBlock) {
+            completionBlock();
+        }
+    };
 }
 
 /** progress */
@@ -350,7 +342,7 @@ dismissCompletion:(GTToastDismissCompletion) completionBlock
     UIView *view = [GTToastManager shareInstance].sharedView;
     MBProgressHUD *hud = [MBProgressHUD HUDForView:view];
     if (!hud) {
-        hud = [MBProgressHUD showHUDAddedTo:view animated:YES];
+        hud = [MBProgressHUD showHUDAddedTo:view animated:NO];
         hud.mode = MBProgressHUDModeAnnularDeterminate;
         hud.label.text = text;
         hud.label.font = [GTToastManager shareInstance].textFont;
@@ -359,14 +351,16 @@ dismissCompletion:(GTToastDismissCompletion) completionBlock
         hud.bezelView.backgroundColor = [GTToastManager shareInstance].backgroundColor;
         hud.removeFromSuperViewOnHide = YES;
         hud.userInteractionEnabled = YES;//阻止用户的操作
-        [hud showAnimated:YES];
+        [hud showAnimated:NO];
+        hud.completionBlock = ^{
+            if (completionBlock) {
+                completionBlock();
+            }
+        };
     }
-    hud.progress = progress;
+    [hud setProgress:progress];
     if (progress >= 1.0) {
-        [hud hideAnimated:YES];
-        if (completionBlock) {
-            completionBlock();
-        }
+        [hud hideAnimated:NO];
     }
 }
 
@@ -404,13 +398,11 @@ dismissCompletion:(GTToastDismissCompletion) completionBlock
     hud.userInteractionEnabled = ![GTToastManager shareInstance].userCanTouchView;
     [hud showAnimated:YES];
     [hud hideAnimated:YES afterDelay:delay];
-    if (completionBlock) {
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delay * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            if (completionBlock) {
-                completionBlock();
-            }
-        });
-    }
+    hud.completionBlock = ^{
+        if (completionBlock) {
+            completionBlock();
+        }
+    };
 }
 
 + (NSTimeInterval)smartDelaySecondsForTipsText:(NSString *)text {
